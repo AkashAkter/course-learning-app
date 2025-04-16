@@ -1,3 +1,5 @@
+// src/app/middlewares/validateRequest.ts
+
 import { NextFunction, Request, Response } from "express";
 import { AnyZodObject, ZodError } from "zod";
 import ApiError from "../utils/ApiError";
@@ -23,7 +25,7 @@ const validateRequest = (schema: AnyZodObject) => {
           new ApiError(
             httpStatus.BAD_REQUEST,
             "Validation Error",
-            errorMessages
+            errorMessages // Now this will be properly accepted
           )
         );
       } else {

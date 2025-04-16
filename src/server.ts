@@ -5,12 +5,13 @@ import config from "./config";
 async function bootstrap() {
   try {
     console.log("Connecting to database...");
-    await mongoose.connect(config.database_url, {
+    await mongoose.connect(config.database_url as string, {
       serverSelectionTimeoutMS: 5000,
       retryWrites: true,
       w: "majority",
     });
-    console.log("Database connected successfully");
+
+    console.log("✅ Database connected successfully");
 
     app.listen(config.port, () => {
       console.log(`Server running on http://localhost:${config.port}`);

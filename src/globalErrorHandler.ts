@@ -30,7 +30,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
       },
     ];
   }
-  // Handle CastError (invalid MongoDB ID format)
+
   else if (err.name === "CastError") {
     statusCode = httpStatus.BAD_REQUEST;
     message = "Cast Error";

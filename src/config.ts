@@ -1,11 +1,19 @@
-import dotenv from "dotenv";
-import path from "path";
+// src/config.ts
 
-dotenv.config({ path: path.join(__dirname, "../.env") });
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({ path: path.join(process.cwd(), '.env') });
 
 export default {
-  port: parseInt(process.env.PORT || "3000"),
-  env: process.env.NODE_ENV || "development",
-  database_url: process.env.DATABASE_URL as string,
-  bcrypt_salt_rounds: parseInt(process.env.BCRYPT_SALT_ROUNDS || "12"),
+  env: process.env.NODE_ENV,
+  port: process.env.PORT,
+  database_url: process.env.DATABASE_URL,
+  bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
+  jwt: {
+    secret: process.env.JWT_SECRET as string,
+    expires_in: process.env.JWT_EXPIRES_IN as string,
+    refresh_secret: process.env.JWT_REFRESH_SECRET,
+    refresh_expires_in: process.env.JWT_REFRESH_EXPIRES_IN,
+  },
 };

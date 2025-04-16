@@ -1,5 +1,10 @@
 import mongoose, { Types } from "mongoose";
 
+export enum ENUM_USER_ROLE {
+  STUDENT = 'student',
+  TEACHER = 'teacher',
+}
+
 export type TUserRole = "student" | "teacher";
 
 export interface IUser {
@@ -7,6 +12,25 @@ export interface IUser {
   email: string;
   password: string;
   role: TUserRole;
+  followingTeachers?: Types.ObjectId[];
+  enrolledCourses?: Types.ObjectId[];
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ILoginUserInput {
+  email: string;
+  password: string;
+}
+
+export interface IUserLoginResponse {
+  accessToken: string;
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+    role: TUserRole;
+  };
 }
 
 export interface IUserMethods {
