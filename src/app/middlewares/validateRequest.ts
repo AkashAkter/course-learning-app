@@ -21,11 +21,12 @@ const validateRequest = (schema: AnyZodObject) => {
           message: issue.message,
         }));
 
+        // Throw custom error that includes full structure
         next(
           new ApiError(
             httpStatus.BAD_REQUEST,
             "Validation Error",
-            errorMessages // Now this will be properly accepted
+            errorMessages
           )
         );
       } else {

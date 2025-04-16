@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import { LessonModel, TLesson } from './lesson.interface';
+import { Schema, model } from "mongoose";
+import { LessonModel, TLesson } from "./lesson.interface";
 
 const lessonSchema = new Schema<TLesson, LessonModel>(
   {
@@ -7,11 +7,11 @@ const lessonSchema = new Schema<TLesson, LessonModel>(
     description: { type: String, required: true },
     course: {
       type: Schema.Types.ObjectId,
-      ref: 'Course',
+      ref: "Course",
       required: true,
     },
   },
   { timestamps: true }
 );
 
-export const Lesson = model<TLesson, LessonModel>('Lesson', lessonSchema);
+export const Lesson = model<TLesson, LessonModel>("Lesson", lessonSchema);

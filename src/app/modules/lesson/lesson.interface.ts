@@ -1,4 +1,4 @@
-import { Types, Model } from 'mongoose';
+import { Types, Model } from "mongoose";
 
 export type TLesson = {
   title: string;
