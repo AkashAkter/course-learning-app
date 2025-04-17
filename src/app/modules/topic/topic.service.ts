@@ -1,4 +1,3 @@
-// src/app/modules/topic/topic.service.ts
 import httpStatus from "http-status";
 import ApiError from "../../utils/ApiError";
 import { Topic } from "./topic.model";

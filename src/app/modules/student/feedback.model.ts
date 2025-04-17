@@ -1,18 +1,16 @@
-// src/app/modules/student/feedback.model.ts
-
-import { Schema, model } from 'mongoose';
-import { TFeedback } from './student.interface';
+import { Schema, model } from "mongoose";
+import { TFeedback } from "./student.interface";
 
 const feedbackSchema = new Schema<TFeedback>(
   {
     student: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
     course: {
       type: Schema.Types.ObjectId,
-      ref: 'Course',
+      ref: "Course",
       required: true,
     },
     rating: {
@@ -31,4 +29,4 @@ const feedbackSchema = new Schema<TFeedback>(
   }
 );
 
-export const Feedback = model<TFeedback>('Feedback', feedbackSchema);
+export const Feedback = model<TFeedback>("Feedback", feedbackSchema);

@@ -1,18 +1,18 @@
 // src/app/modules/student/topicProgress.model.ts
 
-import { Schema, model } from 'mongoose';
-import { TTopicProgress } from './student.interface';
+import { Schema, model } from "mongoose";
+import { TTopicProgress } from "./student.interface";
 
 const topicProgressSchema = new Schema<TTopicProgress>(
   {
     student: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
     topic: {
       type: Schema.Types.ObjectId,
-      ref: 'Topic',
+      ref: "Topic",
       required: true,
     },
     completed: {
@@ -31,4 +31,7 @@ const topicProgressSchema = new Schema<TTopicProgress>(
 // Create a compound index to ensure unique topic progress records
 topicProgressSchema.index({ student: 1, topic: 1 }, { unique: true });
 
-export const TopicProgress = model<TTopicProgress>('TopicProgress', topicProgressSchema);
+export const TopicProgress = model<TTopicProgress>(
+  "TopicProgress",
+  topicProgressSchema
+);

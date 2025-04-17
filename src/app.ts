@@ -1,5 +1,3 @@
-// src/app.ts
-
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import { userRoutes } from "./app/modules/user/user.route";
@@ -21,15 +19,12 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/courses", CourseRoutes);
 app.use("/api/v1/lessons", LessonRoutes);
 app.use("/api/v1/topic", TopicRoutes);
-app.use('/api/v1/student', studentRoutes);
+app.use("/api/v1/student", studentRoutes);
 
-
-// Testing
 app.get("/", (req: Request, res: Response) => {
   res.send("Course Learning API is working!");
 });
 
-// Global error handler
 app.use(globalErrorHandler);
 
 export default app;

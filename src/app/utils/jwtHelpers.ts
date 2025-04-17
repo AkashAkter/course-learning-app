@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
-import config from '../../config';
+import jwt from "jsonwebtoken";
+import config from "../../config";
 
 export const jwtHelpers = {
   createToken: (
@@ -8,11 +8,11 @@ export const jwtHelpers = {
     expiresIn: string
   ): string => {
     return jwt.sign(payload, secret, {
-      expiresIn
+      expiresIn,
     });
   },
 
   verifyToken: (token: string, secret: string) => {
     return jwt.verify(token, secret);
-  }
+  },
 };

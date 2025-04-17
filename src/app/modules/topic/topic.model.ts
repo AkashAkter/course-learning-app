@@ -1,4 +1,3 @@
-// src/app/modules/topic/topic.model.ts
 import { Schema, model } from "mongoose";
 import { TTopic, TopicModel } from "./topic.interface";
 

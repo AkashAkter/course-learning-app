@@ -1,4 +1,3 @@
-// src/app/modules/topic/topic.route.ts
 import express from "express";
 import { TopicController } from "./topic.controller";
 import validateRequest from "../../middlewares/validateRequest";

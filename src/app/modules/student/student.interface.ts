@@ -1,6 +1,4 @@
-// src/app/modules/student/student.interface.ts
-
-import { Types } from 'mongoose';
+import { Types } from "mongoose";
 
 export type TEnrollment = {
   student: Types.ObjectId;

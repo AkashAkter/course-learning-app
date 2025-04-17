@@ -1,35 +1,36 @@
-// src/app/modules/student/student.service.ts
-
-import httpStatus from 'http-status';
-import { Types } from 'mongoose';
-import ApiError from '../../utils/ApiError';
-import { Course } from '../course/course.model';
-import { Lesson } from '../lesson/lesson.model';
-import { Topic } from '../topic/topic.model';
-import User from '../user/user.model';
-import { Enrollment } from './enrollment.model';
-import { Feedback } from './feedback.model';
-import { TeacherFollowing } from './teacherFollowing.model';
-import { TopicProgress } from './topicProgress.model';
-import { IPopulatedTopic } from '../topic/topic.interface';
+import httpStatus from "http-status";
+import { Types } from "mongoose";
+import ApiError from "../../utils/ApiError";
+import { Course } from "../course/course.model";
+import { Lesson } from "../lesson/lesson.model";
+import { Topic } from "../topic/topic.model";
+import User from "../user/user.model";
+import { Enrollment } from "./enrollment.model";
+import { Feedback } from "./feedback.model";
+import { TeacherFollowing } from "./teacherFollowing.model";
+import { TopicProgress } from "./topicProgress.model";
+import { IPopulatedTopic } from "../topic/topic.interface";
 
 // Enroll in a course
 const enrollInCourse = async (studentId: string, courseId: string) => {
   // Check if the student exists
   const student = await User.findById(studentId);
   if (!student) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Student not found');
+    throw new ApiError(httpStatus.NOT_FOUND, "Student not found");
   }
 
   // Check if the student role is actually student
-  if (student.role !== 'student') {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Only students can enroll in courses');
+  if (student.role !== "student") {
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "Only students can enroll in courses"
+    );
   }
 
   // Check if the course exists
   const course = await Course.findById(courseId);
   if (!course) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Course not found');
+    throw new ApiError(httpStatus.NOT_FOUND, "Course not found");
   }
 
   // Check if the student is already enrolled in the course
@@ -39,7 +40,10 @@ const enrollInCourse = async (studentId: string, courseId: string) => {
   });
 
   if (existingEnrollment) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Student is already enrolled in this course');
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "Student is already enrolled in this course"
+    );
   }
 
   // Create enrollment record
@@ -62,15 +66,15 @@ const getEnrolledCourses = async (studentId: string) => {
   // Check if the student exists
   const student = await User.findById(studentId);
   if (!student) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Student not found');
+    throw new ApiError(httpStatus.NOT_FOUND, "Student not found");
   }
 
   const enrollments = await Enrollment.find({ student: studentId })
     .populate({
-      path: 'course',
+      path: "course",
       populate: {
-        path: 'teacher',
-        select: 'name email',
+        path: "teacher",
+        select: "name email",
       },
     })
     .sort({ enrollmentDate: -1 });
@@ -87,29 +91,33 @@ const getCourseProgress = async (studentId: string, courseId: string) => {
   });
 
   if (!enrollment) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Student is not enrolled in this course');
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      "Student is not enrolled in this course"
+    );
   }
 
   // Get all topics for the course
   const lessons = await Lesson.find({ course: courseId });
-  
+
   // Get IDs of all topics in the course
-  const lessonIds = lessons.map(lesson => lesson._id);
+  const lessonIds = lessons.map((lesson) => lesson._id);
   const topics = await Topic.find({ lesson: { $in: lessonIds } });
-  
+
   // Get completed topics
   const completedTopics = await TopicProgress.find({
     student: studentId,
-    topic: { $in: topics.map(topic => topic._id) },
+    topic: { $in: topics.map((topic) => topic._id) },
     completed: true,
   });
 
   // Calculate progress percentage
   const totalTopics = topics.length;
   const completedTopicsCount = completedTopics.length;
-  const progressPercentage = totalTopics > 0 
-    ? Math.round((completedTopicsCount / totalTopics) * 100) 
-    : 0;
+  const progressPercentage =
+    totalTopics > 0
+      ? Math.round((completedTopicsCount / totalTopics) * 100)
+      : 0;
 
   // Update enrollment progress
   enrollment.progress = progressPercentage;
@@ -126,62 +134,65 @@ const getCourseProgress = async (studentId: string, courseId: string) => {
 
 // Mark a topic as completed
 const markTopicAsCompleted = async (studentId: string, topicId: string) => {
-    // Check if the topic exists
-    const topic = await Topic.findById(topicId).populate({
-      path: 'lesson',
-      populate: {
-        path: 'course',
-      },
-    });
-  
-    if (!topic) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Topic not found');
-    }
-  
-    // Cast the populated topic to the correct interface
-    const populatedTopic = topic as unknown as IPopulatedTopic;
-    
-    // Now we can safely access the course ID
-    const courseId = populatedTopic.lesson.course._id;
-    
-    // Check if the student is enrolled in the related course
-    const enrollment = await Enrollment.findOne({
-      student: studentId,
-      course: courseId,
-    });
-  
-    if (!enrollment) {
-      throw new ApiError(httpStatus.FORBIDDEN, 'Student is not enrolled in this course');
-    }
-  
-    // Update or create topic progress
-    const topicProgress = await TopicProgress.findOneAndUpdate(
-      {
-        student: studentId,
-        topic: topicId,
-      },
-      {
-        completed: true,
-        completedAt: new Date(),
-      },
-      {
-        new: true,
-        upsert: true,
-      }
+  // Check if the topic exists
+  const topic = await Topic.findById(topicId).populate({
+    path: "lesson",
+    populate: {
+      path: "course",
+    },
+  });
+
+  if (!topic) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Topic not found");
+  }
+
+  // Cast the populated topic to the correct interface
+  const populatedTopic = topic as unknown as IPopulatedTopic;
+
+  // Now we can safely access the course ID
+  const courseId = populatedTopic.lesson.course._id;
+
+  // Check if the student is enrolled in the related course
+  const enrollment = await Enrollment.findOne({
+    student: studentId,
+    course: courseId,
+  });
+
+  if (!enrollment) {
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "Student is not enrolled in this course"
     );
-  
-    // Update course progress
-    await getCourseProgress(studentId, courseId.toString());
-  
-    return topicProgress;
-  };
+  }
+
+  // Update or create topic progress
+  const topicProgress = await TopicProgress.findOneAndUpdate(
+    {
+      student: studentId,
+      topic: topicId,
+    },
+    {
+      completed: true,
+      completedAt: new Date(),
+    },
+    {
+      new: true,
+      upsert: true,
+    }
+  );
+
+  // Update course progress
+  await getCourseProgress(studentId, courseId.toString());
+
+  return topicProgress;
+};
 
 // Like a course
 const likeCourse = async (studentId: string, courseId: string) => {
   // Check if the course exists
   const course = await Course.findById(courseId);
   if (!course) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Course not found');
+    throw new ApiError(httpStatus.NOT_FOUND, "Course not found");
   }
 
   // Check if the student is enrolled in the course
@@ -191,7 +202,10 @@ const likeCourse = async (studentId: string, courseId: string) => {
   });
 
   if (!enrollment) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Only enrolled students can like a course');
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "Only enrolled students can like a course"
+    );
   }
 
   // Increment course likes
@@ -206,12 +220,12 @@ const provideFeedback = async (
   studentId: string,
   courseId: string,
   rating: number,
-  comment: string,
+  comment: string
 ) => {
   // Check if the course exists
   const course = await Course.findById(courseId);
   if (!course) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Course not found');
+    throw new ApiError(httpStatus.NOT_FOUND, "Course not found");
   }
 
   // Check if the student is enrolled in the course
@@ -221,7 +235,10 @@ const provideFeedback = async (
   });
 
   if (!enrollment) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'Only enrolled students can provide feedback');
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "Only enrolled students can provide feedback"
+    );
   }
 
   // Check if the student has already provided feedback
@@ -254,12 +271,15 @@ const followTeacher = async (studentId: string, teacherId: string) => {
   // Check if the teacher exists
   const teacher = await User.findById(teacherId);
   if (!teacher) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Teacher not found');
+    throw new ApiError(httpStatus.NOT_FOUND, "Teacher not found");
   }
 
   // Check if the user is actually a teacher
-  if (teacher.role !== 'teacher') {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'You can only follow users with teacher role');
+  if (teacher.role !== "teacher") {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "You can only follow users with teacher role"
+    );
   }
 
   // Check if already following
@@ -269,7 +289,10 @@ const followTeacher = async (studentId: string, teacherId: string) => {
   });
 
   if (existingFollow) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'You are already following this teacher');
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "You are already following this teacher"
+    );
   }
 
   // Create follow record
@@ -290,20 +313,25 @@ const unfollowTeacher = async (studentId: string, teacherId: string) => {
   });
 
   if (!following) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'You are not following this teacher');
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      "You are not following this teacher"
+    );
   }
 
   // Delete follow record
   await TeacherFollowing.findByIdAndDelete(following._id);
 
-  return { message: 'Teacher unfollowed successfully' };
+  return { message: "Teacher unfollowed successfully" };
 };
 
 // Get all teachers followed by a student
 const getFollowedTeachers = async (studentId: string) => {
-  const followings = await TeacherFollowing.find({ student: studentId }).populate({
-    path: 'teacher',
-    select: 'name email',
+  const followings = await TeacherFollowing.find({
+    student: studentId,
+  }).populate({
+    path: "teacher",
+    select: "name email",
   });
 
   return followings;
@@ -312,15 +340,15 @@ const getFollowedTeachers = async (studentId: string) => {
 // Get all available courses for students
 const getAllCourses = async (
   filters: Record<string, unknown>,
-  paginationOptions: Record<string, unknown>,
+  paginationOptions: Record<string, unknown>
 ) => {
   const { searchTerm, ...filtersData } = filters;
   const { page = 1, limit = 10 } = paginationOptions;
-  
+
   const skip = (Number(page) - 1) * Number(limit);
-  
+
   const andConditions = [];
-  
+
   // Search implementation
   if (searchTerm) {
     andConditions.push({
@@ -328,19 +356,19 @@ const getAllCourses = async (
         {
           title: {
             $regex: searchTerm,
-            $options: 'i',
+            $options: "i",
           },
         },
         {
           description: {
             $regex: searchTerm,
-            $options: 'i',
+            $options: "i",
           },
         },
       ],
     });
   }
-  
+
   // Filters implementation
   if (Object.keys(filtersData).length) {
     andConditions.push({
@@ -349,20 +377,21 @@ const getAllCourses = async (
       })),
     });
   }
-  
-  const whereConditions = andConditions.length > 0 ? { $and: andConditions } : {};
-  
+
+  const whereConditions =
+    andConditions.length > 0 ? { $and: andConditions } : {};
+
   const result = await Course.find(whereConditions)
     .populate({
-      path: 'teacher',
-      select: 'name email',
+      path: "teacher",
+      select: "name email",
     })
     .skip(skip)
     .limit(Number(limit))
     .sort({ createdAt: -1 });
-    
+
   const total = await Course.countDocuments(whereConditions);
-  
+
   return {
     meta: {
       page: Number(page),

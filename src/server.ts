@@ -11,7 +11,7 @@ async function bootstrap() {
       w: "majority",
     });
 
-    console.log("✅ Database connected successfully");
+    console.log("Database connected successfully");
 
     app.listen(config.port, () => {
       console.log(`Server running on http://localhost:${config.port}`);

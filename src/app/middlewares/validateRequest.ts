@@ -1,5 +1,3 @@
-// src/app/middlewares/validateRequest.ts
-
 import { NextFunction, Request, Response } from "express";
 import { AnyZodObject, ZodError } from "zod";
 import ApiError from "../utils/ApiError";
@@ -21,7 +19,6 @@ const validateRequest = (schema: AnyZodObject) => {
           message: issue.message,
         }));
 
-        // Throw custom error that includes full structure
         next(
           new ApiError(
             httpStatus.BAD_REQUEST,

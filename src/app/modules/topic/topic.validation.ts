@@ -1,4 +1,3 @@
-// src/app/modules/topic/topic.validation.ts
 import { z } from "zod";
 
 export const createTopicZodSchema = z.object({

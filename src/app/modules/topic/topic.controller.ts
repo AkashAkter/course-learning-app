@@ -1,4 +1,3 @@
-// src/app/modules/topic/topic.controller.ts
 import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/apiResponse";

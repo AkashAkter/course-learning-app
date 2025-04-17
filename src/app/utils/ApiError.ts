@@ -1,12 +1,10 @@
-// src/utils/ApiError.ts
-
-import httpStatus from 'http-status';
+import httpStatus from "http-status";
 
 class ApiError extends Error {
   statusCode: number;
   isOperational: boolean;
-  errors?: Array<{ path: string; message: string }>; // Add this line for validation errors
-  
+  errors?: Array<{ path: string; message: string }>;
+
   constructor(
     statusCode: number,
     message: string,
@@ -16,8 +14,8 @@ class ApiError extends Error {
     super(message);
     this.statusCode = statusCode;
     this.isOperational = isOperational;
-    this.errors = errors; // Assign the errors array
-    
+    this.errors = errors;
+
     Error.captureStackTrace(this, this.constructor);
   }
 }
